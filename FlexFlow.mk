@@ -95,8 +95,11 @@ ifneq ($(strip $(FF_USE_PYTHON)), 1)
   GEN_SRC		+= ${FF_HOME}/src/runtime/cpp_driver.cc
 endif
 
-INC_FLAGS	+= -I${FF_HOME}/include/ -I$(CUDNN_HOME)/include -I$(CUDA_HOME)/include
+INC_FLAGS	+= -I${FF_HOME}/include/ -I$(CUDNN_HOME)/include -I$(CUDA_HOME)/include 
+INC_FLAGS	+= -I${FF_HOME}/fbuf2/include
+
 LD_FLAGS	+= -lcudnn -lcublas -lcurand -L$(CUDNN_HOME)/lib64 -L$(CUDA_HOME)/lib64
+LD_FLAGS 	+= -L/usr/lib/x86_64-linux-gnu/hdf5/serial
 CC_FLAGS	+= -DMAX_TENSOR_DIM=$(MAX_DIM)
 NVCC_FLAGS	+= -DMAX_TENSOR_DIM=$(MAX_DIM)
 HIPCC_FLAGS     += -DMAX_TENSOR_DIM=$(MAX_DIM)
