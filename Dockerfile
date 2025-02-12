@@ -3,10 +3,10 @@ FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu18.04
 RUN apt-get update && apt-get install -y --no-install-recommends wget sudo binutils git zlib1g-dev libhdf5-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget -c https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/Miniconda3.sh && \
-    chmod +x ~/Miniconda3.sh && \
-    ~/Miniconda3.sh -b -p /opt/conda && \
-    rm ~/Miniconda3.sh && \
+RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.3-Linux-x86_64.sh && \
+    chmod +x Miniconda3-py38_4.8.3-Linux-x86_64.sh && \
+    ./Miniconda3-py38_4.8.3-Linux-x86_64.sh -b -p /opt/conda && \
+    rm Miniconda3-py38_4.8.3-Linux-x86_64.sh && \
     /opt/conda/bin/conda upgrade --all && \
     /opt/conda/bin/conda install conda-build conda-verify && \
     /opt/conda/bin/conda clean -ya
@@ -35,10 +35,14 @@ COPY . /usr/FlexFlow
 
 ENV FF_HOME=/usr/FlexFlow
 ENV LG_RT_DIR=/usr/FlexFlow/legion/runtime
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
 
 RUN cd /usr/FlexFlow/python && \
+    make -j4
+
+RUN ln -s /usr/local/cuda-11.1/compat/libcuda.so.1 /usr/local/cuda/lib64/ && \
+    cd /usr/FlexFlow/examples/cpp/DLRMsim && \
     make -j4
 
 WORKDIR /usr/FlexFlow
